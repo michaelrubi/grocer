@@ -40,6 +40,10 @@ final locationVisible = ChangeNotifierProvider((ref) {
   return IsTrue(value: false);
 });
 
+final settingsVisible = ChangeNotifierProvider((ref) {
+  return IsTrue(value: false);
+});
+
 final swipeState = ChangeNotifierProvider((ref) {
   return SwipeState();
 });

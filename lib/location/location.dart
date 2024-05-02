@@ -57,8 +57,10 @@ class StoreForm extends ConsumerWidget {
         builder: (BuildContext context) {
           return AlertDialog(
             contentPadding: EdgeInsets.zero,
-            backgroundColor: Col.surface,
-            shape: BeveledRectangleBorder(borderRadius: BorderRadius.circular(bdrRad)),
+            backgroundColor: Col.menu,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(bdrRad),
+              ),
             content: ColorPicker(
                 onColorSelected: (selectedColor) {
                   ref.read(colorSelection).select(selectedColor);

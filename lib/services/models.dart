@@ -70,6 +70,21 @@ class Data extends ChangeNotifier {
     notifyListeners();
   }
 
+  void deleteAllItems() {
+    for (StoreSchema store in value) {
+      store.groceries!.clear();
+    }
+    groceryBox.clear();
+    notifyListeners();
+  }
+
+  void deleteAllData() {
+    value.clear();
+    groceryBox.clear();
+    groceryStoreBox.clear();
+    notifyListeners();
+  }
+
   GroceryStore getStore(String name) {
     return getSchema(name).toStore();
   }

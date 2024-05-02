@@ -4,9 +4,11 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:grocer/add/add.dart';
 import 'package:grocer/groceries/groceries.dart';
+import 'package:grocer/home/bottom_bar.dart';
 import 'package:grocer/location/location.dart';
 import 'package:grocer/search/search.dart' show SearchSection;
 import 'package:grocer/services/services.dart';
+import 'package:grocer/settings/settings.dart';
 import 'package:grocer/shared/shared.dart';
 
 class HomePage extends ConsumerWidget {
@@ -27,7 +29,7 @@ class HomePage extends ConsumerWidget {
                 padding: EdgeInsets.all(Gap.sml),
                 child: ref.watch(locationVisible).value
                     ? const LocationPage()
-                    : const HomeContent(),
+                    : ref.watch(settingsVisible).value ? const SettingsPage() : const HomeContent(),
               ),
             ),
             const BottomNav(),

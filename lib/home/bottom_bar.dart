@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:grocer/services/services.dart';
 import 'package:grocer/shared/styles.dart';
-import 'package:logger/logger.dart';
 
 const navItems = [
   {
@@ -21,11 +20,11 @@ const navItems = [
   //   'label': 'Search',
   //   'key': 'search',
   // },
-  // {
-  //   'icon': FontAwesomeIcons.gear,
-  //   'label': 'Settings',
-  //   'key': 'settings',
-  // },
+  {
+    'icon': FontAwesomeIcons.gear,
+    'label': 'Settings',
+    'key': 'settings',
+  },
 ];
 
 class BottomNav extends ConsumerWidget {
@@ -33,24 +32,17 @@ class BottomNav extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    Logger().i(MediaQuery.of(context).systemGestureInsets);
 
     bool gestureBarDisabled = MediaQuery.of(context).viewInsets.left > 0.0;
     double systemNavBarHeight = gestureBarDisabled
-        ? MediaQuery.of(context).systemGestureInsets.bottom : Gap.sml;
+        ? MediaQuery.of(context).systemGestureInsets.bottom
+        : Gap.sml;
 
     Map<String, dynamic> functions = {
-      'add': () => {
-            // ref.read(textControllerProvider).text = '',
-            ref.read(addVisible).toggle(),
-          },
-      'location': () => {
-            // ref.read(textControllerProvider).text = '',
-            // ref.read(editModeProvider).reset(),
-            ref.read(locationVisible).toggle(),
-          },
+      'add': () => ref.read(addVisible).toggle(),
+      'location': () => ref.read(locationVisible).toggle(),
       'search': () => ref.read(searchVisible).toggle(),
-      'settings': () {},
+      'settings': () => ref.read(settingsVisible).toggle(),
     };
 
     bool isSelected(String key) {
@@ -62,7 +54,7 @@ class BottomNav extends ConsumerWidget {
         case 'search':
           return ref.watch(searchVisible).value;
         case 'settings':
-          return false;
+          return ref.watch(settingsVisible).value;
         default:
           return false;
       }

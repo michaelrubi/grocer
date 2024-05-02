@@ -48,6 +48,15 @@ class Txt {
     fontWeight: FontWeight.w600,
   );
 
+  static TextStyle alert = GoogleFonts.openSans(
+    color: Col.text,
+    fontSize: 0.75 * rem,
+    letterSpacing: 0.02 * rem,
+    fontWeight: FontWeight.w400,
+  );
+
+
+
   static TextStyle pickerForm = GoogleFonts.openSans(
     color: Col.text,
     fontSize: 1 * rem,
