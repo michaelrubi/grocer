@@ -192,8 +192,8 @@ class Searchable extends ChangeNotifier {
       //     item.name.toLowerCase().contains(search)).toList();
     }
     // Stringify the lists using jsonEncode
-    final filteredString = jsonEncode(filtered.map((item) => item.toJson()).toList());
-    final allString = jsonEncode(all.map((item) => item.toJson()).toList());
+    // final filteredString = jsonEncode(filtered.map((item) => item.toJson()).toList());
+    // final allString = jsonEncode(all.map((item) => item.toJson()).toList());
 
     Logger(printer: PrettyPrinter()).i('Filtered: $filtered\nAll: $all\nCriteria: $criteria');
     notifyListeners();
