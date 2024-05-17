@@ -3,11 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:grocer/services/models.dart';
 import 'package:grocer/shared/styles.dart' show Col;
 
-final groceryDataProvider = 
-  FutureProvider<Data?>((ref) => loadData());
+final groceryDataProvider = FutureProvider<Data?>((ref) => loadData());
 
 final groceryData = ChangeNotifierProvider((ref) {
   return ref.watch(groceryDataProvider).value ?? Data([], []);
+});
+
+final searchProvider = ChangeNotifierProvider((ref) {
+  return Searchable(all: [], controller: TextEditingController());
 });
 
 final addVisible = ChangeNotifierProvider((ref) {

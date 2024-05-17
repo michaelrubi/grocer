@@ -10,15 +10,16 @@ void main() async {
   await initHive();
   runApp(const ProviderScope(child: App()));
   //Setting SysemUIOverlay
-SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    systemStatusBarContrastEnforced: true,
-    systemNavigationBarColor: Colors.transparent, // Blends with the gesture bar
-    systemNavigationBarDividerColor: Colors.transparent,
-    systemNavigationBarIconBrightness: Brightness.light,
-    statusBarIconBrightness: Brightness.light)
-);
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      systemStatusBarContrastEnforced: true,
+      systemNavigationBarColor:
+          Colors.transparent, // Blends with the gesture bar
+      systemNavigationBarDividerColor: Colors.transparent,
+      systemNavigationBarIconBrightness: Brightness.light,
+      statusBarIconBrightness: Brightness.light));
 //Setting SystemUIMode
-SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge, overlays: [SystemUiOverlay.top]);
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge,
+      overlays: [SystemUiOverlay.top]);
 }
 
 class App extends StatelessWidget {
@@ -30,6 +31,7 @@ class App extends StatelessWidget {
       theme: appTheme,
       title: 'Grocer',
       debugShowCheckedModeBanner: false,
+      // home: const TestPage(),
       home: const HomePage(),
       color: Col.menu,
     );

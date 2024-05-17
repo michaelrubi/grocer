@@ -11,6 +11,7 @@ class AddSection extends ConsumerWidget {
     final txtCtrl = ref.watch(textControllerProvider);
     final storeCtrl = ref.watch(storeSelection);
     final writeData = ref.read(groceryData);
+    final search = ref.read(searchProvider);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -23,6 +24,7 @@ class AddSection extends ConsumerWidget {
         ),
         SizedBox(height: Gap.sml),
         TextField(
+          onChanged: (value) => search.filter(value),
           controller: txtCtrl,
           style: Txt.label,
           decoration: InputDecoration(
@@ -108,38 +110,38 @@ class StoreDropdown extends ConsumerWidget {
     final storeNames = writeData.getStoreNames();
 
     return Container(
-          decoration: ShapeDecoration(
-            color: Col.field,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(6),
+      decoration: ShapeDecoration(
+        color: Col.field,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(6),
+        ),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton(
+          padding: EdgeInsets.only(left: Gap.sml),
+          isExpanded: true,
+          dropdownColor: Col.field,
+          borderRadius: BorderRadius.circular(6),
+          underline: null,
+          style: Txt.label,
+          items: [
+            DropdownMenuItem(
+              value: null,
+              child: Text(
+                'Select Store',
+                style: TextStyle(color: Col.highlight),
+              ),
             ),
-          ),
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton(
-              padding: EdgeInsets.only(left: Gap.sml),
-              isExpanded: true,
-              dropdownColor: Col.field,
-              borderRadius: BorderRadius.circular(6),
-              underline: null,
-              style: Txt.label,
-              items: [
-                DropdownMenuItem(
-                  value: null,
-                  child: Text(
-                    'Select Store',
-                    style: TextStyle(color: Col.highlight),
-                  ),
-                ),
-                ...storeNames.map((store) => DropdownMenuItem(
-                      value: store,
-                      child: Text(store),
-                      onTap: () => storeCtrl.select(store),
-                    )),
-              ],
-              value: storeCtrl.value.isNotEmpty ? storeCtrl.value : null,
-              onChanged: (_) => {},
-            ),
-          ),
-        );
+            ...storeNames.map((store) => DropdownMenuItem(
+                  value: store,
+                  child: Text(store),
+                  onTap: () => storeCtrl.select(store),
+                )),
+          ],
+          value: storeCtrl.value.isNotEmpty ? storeCtrl.value : null,
+          onChanged: (_) => {},
+        ),
+      ),
+    );
   }
 }

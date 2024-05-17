@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:grocer/shared/styles.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:logger/logger.dart';
 
 part 'models.g.dart';
 
@@ -36,6 +39,35 @@ class Data extends ChangeNotifier {
     return schemas
         .map((schema) => GroceryStore(name: schema.name, color: schema.color))
         .toList();
+  }
+
+  List<Grocery> getGroceries() {
+    List<Grocery> allGroceries = [];
+    for (var store in value) {
+      if (store.groceries != null) {
+        allGroceries.addAll(store.groceries!.toList());
+      }
+    }
+    return sortGroceries(allGroceries);
+  }
+
+  List<Grocery> sortGroceries(List<Grocery> groceries) {
+    groceries
+        .sort((a, b) => (a.purchased ? 1 : 0).compareTo(b.purchased ? 1 : 0));
+    return groceries;
+  }
+
+  List<Grocery> filter(TextEditingController controller) {
+    List<Grocery> groceries = getGroceries();
+    List<Grocery> filtered = groceries;
+    filtered.removeWhere((grocery) => grocery.purchased == false);
+    if (controller.text.isNotEmpty) {
+      Logger().i(controller.text);
+      filtered.removeWhere((grocery) =>
+          !grocery.name.toLowerCase().contains(controller.text.toLowerCase()));
+    }
+    notifyListeners();
+    return filtered;
   }
 
   void addItem(String itemName, String storeName, {bool? isPurchased}) {
@@ -136,6 +168,37 @@ class Data extends ChangeNotifier {
     }
     notifyListeners();
   }
+}
+
+class Searchable extends ChangeNotifier {
+  List<Grocery> all;
+  List<Grocery> filtered = [];
+  TextEditingController controller;
+
+  Searchable({required this.all, required this.controller});
+
+  void filter(String criteria) {
+    // Logger(printer: PrettyPrinter()).i('Criteria: $criteria');
+    if (criteria.isEmpty) {
+      filtered = all;
+    } else {
+      filtered = all
+          .where((item) =>
+              item.name.toLowerCase().contains(criteria.toLowerCase()))
+          .toList();
+      // String search = criteria.isNotEmpty ? criteria.toLowerCase() : '';
+      // filtered.removeWhere((grocery) => grocery.purchased == false);
+      // filtered = filtered.where((item) =>
+      //     item.name.toLowerCase().contains(search)).toList();
+    }
+    // Stringify the lists using jsonEncode
+    final filteredString = jsonEncode(filtered.map((item) => item.toJson()).toList());
+    final allString = jsonEncode(all.map((item) => item.toJson()).toList());
+
+    Logger(printer: PrettyPrinter()).i('Filtered: $filtered\nAll: $all\nCriteria: $criteria');
+    notifyListeners();
+  }
+  
 }
 
 class StoreSchema {

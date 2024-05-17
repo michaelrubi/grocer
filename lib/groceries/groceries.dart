@@ -12,93 +12,89 @@ class GroceryListWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final readData = ref.watch(groceryData).value;
+    // ignore: unused_local_variable
+    final readData = ref.watch(groceryData).value; // Required for refresh
     final writeData = ref.read(groceryData);
-
-    List<Grocery> sortGroceries(List<Grocery> groceries) {
-      groceries.sort((a, b) => (a.purchased ? 1 : 0).compareTo(b.purchased ? 1 : 0));
-      return groceries;
-    }
-
-    List<Grocery> getGroceries() {
-      List<Grocery> allGroceries = [];
-      for (var store in readData) {
-        if (store.groceries != null) {
-          allGroceries.addAll(store.groceries!.toList());
-        }
-      }
-      return sortGroceries(allGroceries);
-    }
-
-    final allGroceries = getGroceries();
+    final txtCtrl = ref.watch(textControllerProvider);
+    final groceries = writeData.getGroceries();
+    final filtered = writeData.filter(txtCtrl);
+    bool filterable = ref.watch(addVisible).value || ref.watch(searchVisible).value;
 
     return Expanded(
       child: SlidableAutoCloseBehavior(
-        closeWhenOpened: true,
-        closeWhenTapped: true,
-        child: ListView.builder(
-          itemCount: getGroceries().length,
-          itemBuilder: (context, index) {
-            final grocery = getGroceries()[index];
-
-            return Column(
-              children: [
-                Slidable(
-                  startActionPane: ActionPane(
-                    motion: const StretchMotion(),
-                    extentRatio: 0.185,
-                    children: [
-                      SlidableAction(
-                        flex: 2,
-                        spacing: Gap.sml,
-                        autoClose: true,
-                        borderRadius: BorderRadius.circular(bdrRad),
-                        backgroundColor: _getSurface(grocery.purchased),
-                        foregroundColor:
-                            _textColor(_getSurface(grocery.purchased)),
-                        icon: _getIcon(grocery.purchased),
-                        label: grocery.purchased ? 'Del' : 'Buy',
-                        onPressed: (context) => _onDismissed(
-                            allGroceries,
-                            index,
-                            grocery.purchased ? Actions.delete : Actions.toggle,
-                            writeData,
-                            context),
-                      ),
-                    ],
-                  ),
-                  endActionPane: ActionPane(
-                    motion: const StretchMotion(),
-                    extentRatio: 0.185,
-                    children: [
-                      SlidableAction(
-                        // flex: 2,
-                        spacing: Gap.sml,
-                        autoClose: true,
-                        borderRadius: BorderRadius.circular(bdrRad),
-                        backgroundColor: _getSurface(grocery.purchased),
-                        foregroundColor:
-                            _textColor(_getSurface(grocery.purchased)),
-                        icon: _getIcon(grocery.purchased),
-                        label: grocery.purchased ? 'Del' : 'Buy',
-                        onPressed: (context) => _onDismissed(
-                            allGroceries,
-                            index,
-                            grocery.purchased ? Actions.delete : Actions.toggle,
-                            writeData,
-                            context),
-                      ),
-                    ],
-                  ),
-                  child: InkWell(
-                    child: GroceryItemWidget(item: grocery),
-                    onTap: () => grocery.purchased
-                        ? _onDismissed(allGroceries, index, Actions.toggle,
-                            writeData, context)
-                        : () {},
-                  ),
+      closeWhenOpened: true,
+      closeWhenTapped: true,
+      child: ListView.builder(
+        itemCount:
+            // groceries.length,
+            !filterable ? groceries.length : filtered.length,
+        itemBuilder: (context, index) {
+          // final grocery = groceries[index];
+          final grocery = !filterable ? groceries[index] : filtered[index];
+          return Column(
+            children: [
+              Slidable(
+                startActionPane: ActionPane(
+                  motion: const StretchMotion(),
+                  extentRatio: 0.185,
+                  children: [
+                    SlidableAction(
+                      flex: 2,
+                      spacing: Gap.sml,
+                      autoClose: true,
+                      borderRadius: BorderRadius.circular(bdrRad),
+                      backgroundColor: _getSurface(grocery.purchased),
+                      foregroundColor:
+                          _textColor(_getSurface(grocery.purchased)),
+                      icon: _getIcon(grocery.purchased),
+                      label: grocery.purchased ? 'Del' : 'Buy',
+                      onPressed: (context) => _onDismissed(
+                          groceries,
+                          index,
+                          grocery.purchased ? Actions.delete : Actions.toggle,
+                          writeData,
+                          context),
+                    ),
+                  ],
                 ),
-                index != getGroceries().length - 1 ? SizedBox(height: Gap.sml) : SizedBox(height: Gap.med * 3.25),
+                endActionPane: ActionPane(
+                  motion: const StretchMotion(),
+                  extentRatio: 0.185,
+                  children: [
+                    SlidableAction(
+                      // flex: 2,
+                      spacing: Gap.sml,
+                      autoClose: true,
+                      borderRadius: BorderRadius.circular(bdrRad),
+                      backgroundColor: _getSurface(grocery.purchased),
+                      foregroundColor:
+                          _textColor(_getSurface(grocery.purchased)),
+                      icon: _getIcon(grocery.purchased),
+                      label: grocery.purchased ? 'Del' : 'Buy',
+                      onPressed: (context) => _onDismissed(
+                          groceries,
+                          index,
+                          grocery.purchased ? Actions.delete : Actions.toggle,
+                          writeData,
+                          context),
+                    ),
+                  ],
+                ),
+                child: InkWell(
+                  child: GroceryItemWidget(item: grocery),
+                  onTap: () => grocery.purchased
+                      ? _onDismissed(
+                          groceries,
+                          index,
+                          Actions.toggle,
+                          writeData,
+                          context)
+                      : () {},
+                ),
+              ),
+                index != groceries.length - 1
+                    ? SizedBox(height: Gap.sml)
+                    : SizedBox(height: Gap.med * 3.25),
               ],
             );
           },
